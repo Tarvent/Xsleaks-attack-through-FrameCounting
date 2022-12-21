@@ -1,5 +1,4 @@
 # Xsleaks-attack-through-FrameCounting
-# XS-leaks attack through iframe 
 
 用户打开页面，window.open会打开目标网站的登录页面，js代码记录打开网址后控制台输出iframe数量，过一段时间后再次输出iframe数量，将两次iframe数打印到表单，表单再传输给node服务器记录到数据库
 
