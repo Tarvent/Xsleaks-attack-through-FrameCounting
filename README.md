@@ -35,7 +35,7 @@ Access the frame's **[window.length](https://developer.mozilla.org/en-US/docs/We
 
   2.iframe包含的代码几乎不会受到外界任何js或者css的影响（非常牛B的优点），可谓独树一帜，很任性；这种特点能减少很 多因为复用代码时，导致的css或者是js冲突，调试过程可谓痛苦，而且多半还要在错综复杂的关系纠葛中进 行修改，不小心可能会引入新的问题，iframe完全可以避免这种问题；
 
-  ---
+  或
 
   1.iframe能够把嵌入的网页原样展现出来；
 
